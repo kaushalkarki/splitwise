@@ -1,0 +1,58 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  background-color: #5bc5a7;
+}
+
+.left-side {
+  display: flex;
+  align-items: center;
+  height: 40px
+}
+
+.logo {
+  height: 40px;
+  /* width: 100px; */
+  margin-right: 10px;
+}
+.left-side p{
+  color: white;
+  font-size: 30px;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-weight: bolder;
+}
+.left-side h4{
+  color: black;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  margin: 10px 0 0 6px;
+  font-family: fantasy;
+}
+
+.text {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.right-side {
+  display: flex;
+  align-items: center;
+}
+
+.profile-name {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.dropdown {
+  padding: 5px;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.home-div{
+  cursor: pointer;
+}

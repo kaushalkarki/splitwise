@@ -1,0 +1,133 @@
+.add-expense-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  /* box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1); */
+}
+
+.add-expense-form h2 {
+  margin-bottom: 10px;
+}
+
+.add-expense-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.add-expense-form input[type="text"],
+.add-expense-form input[type="number"],
+.add-expense-form input[type="date"] {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.paid-split-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.paid-split-container p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.paid-split-container button {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.paid-split-container button:hover {
+  background-color: #e0e0e0;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.button-container button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-container button[type="button"] {
+  background-color: #f0f0f0;
+}
+
+.button-container button[type="submit"] {
+  background-color: #28a745;
+  color: white;
+}
+
+.button-container button:hover {
+  opacity: 0.9;
+}
+/* AddExpenseForm.css */
+.modal-1 {
+  width: 400px; /* Adjust width as needed */
+  max-height: 400px; /* Adjust height as needed */
+  overflow-y: auto; /* Enable vertical scrolling */
+  background-color: #fff; /* White background for the modal */
+  border-radius: 8px; /* Rounded corners for the modal */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow around the modal */
+  padding: 20px; /* Padding inside the modal */
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between user items */
+}
+
+.user-item {
+  padding: 12px; /* Padding around each user item */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 6px; /* Rounded corners for user items */
+  transition: background-color 0.3s, transform 0.3s; /* Smooth transitions */
+  border: 1px solid #ddd; /* Border around each item */
+  background-color: #fafafa; /* Light background for items */
+}
+
+.user-item.selected {
+  background-color: #d1e7dd; /* Background color for selected user */
+  border-color: #b2b2b2; /* Border color for selected user */
+  font-weight: bold; /* Bold text for selected user */
+}
+
+.user-item:hover {
+  background-color: #e2e2e2; /* Background color on hover */
+  transform: scale(1.02); /* Slight scale effect on hover */
+}
+
+.modal-1 button {
+  padding: 10px 20px; 
+  border: none; 
+  border-radius: 6px; /* Rounded corners for buttons */
+  background-color: #007bff; /* Primary button color */
+  color: white; /* Text color for buttons */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.button:hover {
+  background-color: #0056b3; /* Darker color on hover */
+}
+
+.button:focus {
+  outline: none; /* Remove default focus outline */
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.5); /* Custom focus outline */
+}

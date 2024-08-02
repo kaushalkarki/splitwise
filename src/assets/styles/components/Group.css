@@ -1,0 +1,140 @@
+/* Group.css */
+
+.dashboard {
+  display: flex;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  /* border-left: black 2px double; */
+  border-right: darkgray 5px solid;
+
+}
+
+#room-name{
+  color: #999;
+  font-family:cursive;
+}
+
+.grid-item.first-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  box-shadow: 0px 0px 6px 8px darkgray;}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.orange-button {
+  background-color: #ff652f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.green-button {
+  background-color: #5bc5a7;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.expenses-list {
+  margin-top: 20px;
+}
+
+.expense-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f1f1f1;
+  padding: 10px 0;
+}
+
+.expense-date {
+  width: 100px;
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+}
+
+.expense-description {
+  flex: 1;
+  margin-left: 20px;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #2d3436;
+}
+
+.expense-amount {
+  width: 100px;
+  text-align: right;
+  font-weight: bold;
+}
+
+.expense-payer {
+  width: 150px;
+  text-align: center;
+  color: grey;
+  font-size: small;
+  border: 2 px solid aqua;
+}
+
+@media (max-width: 768px) {
+  .expense-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .expense-date,
+  .expense-amount,
+  .expense-payer {
+    width: auto;
+    text-align: left;
+  }
+
+  .expense-description {
+    margin-left: 0;
+  }
+}
+
+.additional-content {
+  margin: 11rem 5rem 0 5rem;
+}
+
+.balance-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: bold;
+}
+
+.user-balance {
+  font-size: 14px;
+}
