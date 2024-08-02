@@ -21,6 +21,7 @@ const AddExpenseForm = ({ onClose, groupId, groupName }) => {
 
   useEffect(() => {
     fetchUsers();
+  // eslint-disable-next-line
   }, []);
 
   useEffect(() => {

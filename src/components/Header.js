@@ -1,6 +1,6 @@
 import React from 'react';
 import '../assets/styles/pages/Header.css';
-import logo from '../assets/images/logo.svg';
+// import logo from '../assets/images/logo.svg';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import CustomizedMenus from '../components/CustomizedMenus';

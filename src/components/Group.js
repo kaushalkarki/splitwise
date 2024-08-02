@@ -3,9 +3,10 @@ import Sidebar from './Sidebar';
 import { useParams, useNavigate } from 'react-router-dom';
 import Modal from './Modal';
 import AddExpenseForm from './AddExpenseForm';
-import "../assets/styles/components/Group.css"
+import "../assets/styles/components/Group.css";
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../constant';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 const Group = () => {
   const { user } = useAuth();
@@ -13,6 +14,7 @@ const Group = () => {
   const navigate = useNavigate();
   const [group, setGroup] = useState(null);
   const [expenses, setExpenses] = useState([]);
+  // eslint-disable-next-line
   const [groupUsers, setGroupUsers] = useState({});
   const [balances, setBalances] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,11 +49,11 @@ const Group = () => {
         const data = await usersResponse.json();
         const expensesData = await expensesResponse.json();
         const userDict = data.users.reduce((acc, u) => {
-          if (u.id === user.id){
-            acc[u.id] = "you"
+          if (u.id === user.id) {
+            acc[u.id] = "you";
+          } else {
+            acc[u.id] = u.name;
           }
-          else{
-          acc[u.id] = u.name;}
           return acc;
         }, {});
         setGroupUsers(userDict);
@@ -78,7 +80,24 @@ const Group = () => {
     fetchGroup();
     fetchGroupUsersAndExpenses();
     fetchBalances();
+    // eslint-disable-next-line
   }, [id]);
+
+  const handleDeleteExpense = async (expenseId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/expenses/${expenseId}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setExpenses(expenses.filter(expense => expense.id !== expenseId));
+        window.location.reload();
+      } else {
+        console.error('Error deleting expense:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error deleting expense:', error);
+    }
+  };
 
   if (!group) {
     return <div>Loading...</div>;
@@ -99,61 +118,58 @@ const Group = () => {
         </div>
         <div className="expenses-list">
           {expenses.map((expense) => {
-            // const lentAmount = expense.payerName === user.name ? expense.amount - userAmount : userAmount;
             return (
-            <div key={expense.id} className="expense-item">
-              <div className="expense-date">{new Date(expense.transaction_date).toLocaleDateString()}</div>
-              <div className="expense-description">{expense.description}</div>
-              <div>
-              <div className="expense-payer">{expense.payerName + " paid"}</div>
-              <div className="expense-amount">{expense.amount}</div>
-              </div>
+              <div key={expense.id} className="expense-item">
+                <div className="expense-date">{new Date(expense.transaction_date).toLocaleDateString()}</div>
+                <div className="expense-description">{expense.description}</div>
                 <div>
-                {expense.payer === user.id && !expense.expense_splits.some(split => split.user_id === user.id) ? (
-  // Case 2: If I paid and I am not a participant
-  <div>
-    <div className="expense-payer">{expense.payerName + " lent"}</div>
-    <div className="expense-amount">{expense.amount}</div>
-  </div>
-) : expense.expense_splits.some(split => split.user_id === user.id) ? (
-  // Case 1 and 3: If I paid and I am a participant OR If I didn't pay but I am a participant
-  expense.expense_splits.map((ele) => {
-    if (expense.payer === user.id && ele.user_id === user.id) {
-      // Case 1: If I paid and I am a participant
-      return (
-        <div key={ele.user_id}>
-          <div className="expense-payer">{expense.payerName + " lent"}</div>
-          <div className="expense-amount">{expense.amount - ele.user_amount}</div>
-        </div>
-      );
-    } else if (ele.user_id === user.id) {
-      // Case 3: If I didn't pay but I am a participant
-      return (
-        <div key={ele.user_id}>
-          <div className="expense-payer">{expense.payerName + " lent you"}</div>
-          <div className="expense-amount">{ele.user_amount}</div>
-        </div>
-      );
-    }
-    return null;
-  })
-) : (
-  // Case 4: If I didn't pay and neither am I a participant
-  <div>
-    <div className="expense-payer">Not involved</div>
-    {/* <div className="expense-amount">0</div> */}
-  </div>
-)}
-
+                  <div className="expense-payer">{expense.payerName + " paid"}</div>
+                  <div className="expense-amount">{expense.amount}</div>
                 </div>
-            </div>
-          )})}
+                <div>
+                  {expense.payer === user.id && !expense.expense_splits.some(split => split.user_id === user.id) ? (
+                    <div>
+                      <div className="expense-payer">{expense.payerName + " lent"}</div>
+                      <div className="expense-amount">{expense.amount}</div>
+                    </div>
+                  ) : expense.expense_splits.some(split => split.user_id === user.id) ? (
+                    expense.expense_splits.map((ele) => {
+                      if (expense.payer === user.id && ele.user_id === user.id) {
+                        return (
+                          <div key={ele.user_id}>
+                            <div className="expense-payer">{expense.payerName + " lent"}</div>
+                            <div className="expense-amount">{expense.amount - ele.user_amount}</div>
+                          </div>
+                        );
+                      } else if (ele.user_id === user.id) {
+                        return (
+                          <div key={ele.user_id}>
+                            <div className="expense-payer">{expense.payerName + " lent you"}</div>
+                            <div className="expense-amount">{ele.user_amount}</div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })
+                  ) : (
+                    <div>
+                      <div className="expense-payer">Not involved</div>
+                    </div>
+                  )}
+                </div>
+                <div className='delete-div'>
+                  <button className="delete-button" onClick={() => handleDeleteExpense(expense.id)}>
+                  <DeleteOutlineIcon/>
+                </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className="additional-content">
         {balances.map((balance) => (
           <div key={balance[0]} className="balance-item">
-            {/* <img src={balance.avatar_url} alt={`${balance.user_name} avatar`} className="user-avatar" /> */}
             <div className="user-info">
               <div className="user-name">{balance[1]}</div>
               <div className="user-balance" style={{ color: balance[2] < 0 ? 'red' : 'green' }}>

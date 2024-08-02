@@ -93,7 +93,9 @@ const Login = () => {
           I'm not a robot
         </label>
         <button type="submit" className="login-button">Log in</button>
+        
         <p className="forgot-password"><a href="/">Forgot your password?</a></p>
+        <button type="submit" className="signup-button" onClick={()=>{navigate('/signup')}}>Sign up</button>
         <div className="social-login">
           {/* <span>or</span> */}
           <GoogleOAuthProvider clientId="995878884828-7dqhulnm74vng0d8ckfo73u331o6g9i3.apps.googleusercontent.com">
