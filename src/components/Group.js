@@ -14,10 +14,16 @@ const Group = () => {
   const navigate = useNavigate();
   const [group, setGroup] = useState(null);
   const [expenses, setExpenses] = useState([]);
-  // eslint-disable-next-line
   const [groupUsers, setGroupUsers] = useState({});
   const [balances, setBalances] = useState([]);
+  const [summary, setSummary] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showBalances, setShowBalances] = useState(true);
+  const [openExpenseId, setOpenExpenseId] = useState(null);
+
+  const handleToggle = () => {
+    setShowBalances(!showBalances);
+  };
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -38,7 +44,6 @@ const Group = () => {
       }
     };
 
-    // Fetch group users and expenses concurrently
     const fetchGroupUsersAndExpenses = async () => {
       try {
         const [usersResponse, expensesResponse] = await Promise.all([
@@ -47,16 +52,14 @@ const Group = () => {
         ]);
 
         const data = await usersResponse.json();
+        console.log(data);
         const expensesData = await expensesResponse.json();
         const userDict = data.users.reduce((acc, u) => {
-          if (u.id === user.id) {
-            acc[u.id] = "you";
-          } else {
-            acc[u.id] = u.name;
-          }
+          acc[u.id] = u.id === user.id ? "you" : u.name;
           return acc;
         }, {});
         setGroupUsers(userDict);
+        console.log(groupUsers);
         const expensesWithUsernames = expensesData.expenses.map(expense => ({
           ...expense,
           payerName: userDict[expense.payer] || 'Unknown User'
@@ -72,6 +75,7 @@ const Group = () => {
         const response = await fetch(`${API_BASE_URL}/groups/${id}/balances`);
         const data = await response.json();
         setBalances(data.total);
+        setSummary(data.summary);
       } catch (error) {
         console.error('Error fetching balances:', error);
       }
@@ -99,6 +103,10 @@ const Group = () => {
     }
   };
 
+  const handleExpenseClick = (expenseId) => {
+    setOpenExpenseId(openExpenseId === expenseId ? null : expenseId);
+  };
+
   if (!group) {
     return <div>Loading...</div>;
   }
@@ -117,9 +125,9 @@ const Group = () => {
           </div>
         </div>
         <div className="expenses-list">
-          {expenses.map((expense) => {
-            return (
-              <div key={expense.id} className="expense-item">
+          {expenses.map((expense) => (
+            <>
+              <div key={expense.id} className="expense-item" onClick={() => handleExpenseClick(expense.id)}>
                 <div className="expense-date">{new Date(expense.transaction_date).toLocaleDateString()}</div>
                 <div className="expense-description">{expense.description}</div>
                 <div>
@@ -159,25 +167,52 @@ const Group = () => {
                 </div>
                 <div className='delete-div'>
                   <button className="delete-button" onClick={() => handleDeleteExpense(expense.id)}>
-                  <DeleteOutlineIcon/>
-                </button>
+                    <DeleteOutlineIcon />
+                  </button>
                 </div>
               </div>
-            );
-          })}
+              {openExpenseId === expense.id && (
+                <div key={`${expense.id}+collapse`} className='collapsible-content'>
+                  {expense.expense_splits.map((split) => (
+                    <p key={split.user_id}>
+                      {groupUsers[split.user_id]} {split.owes === false ? 'paid' : 'owes'} {split.user_amount}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </>
+          ))}
         </div>
       </div>
       <div className="additional-content">
-        {balances.map((balance) => (
-          <div key={balance[0]} className="balance-item">
-            <div className="user-info">
-              <div className="user-name">{balance[1]}</div>
-              <div className="user-balance" style={{ color: balance[2] < 0 ? 'red' : 'green' }}>
-                {balance[2] < 0 ? `owes INR ${Math.abs(balance[2])}` : `gets back INR ${balance[2]}`}
+        <button onClick={handleToggle} className='toggle-btn'>
+          {showBalances ? 'Show Summary' : 'Show Balances'}
+        </button>
+
+        {showBalances ? (
+          <div>
+            {balances.map((balance) => (
+              <div key={balance[0]} className="balance-item">
+                <div className="user-info">
+                  <div className="user-name">{balance[1]}</div>
+                  <div className="user-balance" style={{ color: balance[2] < 0 ? 'red' : 'green' }}>
+                    {balance[2] < 0 ? `owes INR ${Math.abs(balance[2])}` : `gets back INR ${balance[2]}`}
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
+        ) : (
+          <div>
+            {summary.map((summary, index) => (
+              <div className="summary-item" key={index}>
+                <div className="summary-balance">
+                  <div><b>{summary[0]}</b> will pay <b>{summary[1]}</b> Rs.{summary[2]}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <AddExpenseForm onClose={closeModal} groupId={group.id} groupName={group.name} />

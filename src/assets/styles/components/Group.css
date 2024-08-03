@@ -8,7 +8,7 @@
   flex: 1;
   padding: 20px;
   /* border-left: black 2px double; */
-  border-right: darkgray 5px solid;
+  /* border-right: darkgray 5px solid; */
 
 }
 
@@ -99,10 +99,11 @@ margin-left: 10px;
   right: 10px;
   background: none;
   border: none;
-  color: red;
+  color:gray;
   font-size: 20px;
   cursor: pointer;
   visibility: hidden;
+  border-bottom: red 2px solid;
 }
 
 .expense-item:hover .delete-button {
@@ -128,7 +129,10 @@ margin-left: 10px;
 }
 
 .additional-content {
-  margin: 11rem 5rem 0 5rem;
+  margin: 8rem 5rem 0 5rem;
+  width: 10%;
+  height: 100vh;
+  /* background-color: grey; */
 }
 
 .balance-item {
@@ -138,6 +142,19 @@ margin-left: 10px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
+}
+
+
+.summary-item {
+  display: grid;
+  width: 121px;
+  height: 40px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px 0 0 0;
+  /* color: #ff652f; */
+  border-radius: 5px;
+  font-size: 1rem;
 }
 
 .user-avatar {
@@ -158,4 +175,60 @@ margin-left: 10px;
 
 .user-balance {
   font-size: 14px;
+}
+
+/* Group.css */
+
+/* Styles for summary items */
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  height: fit-content;
+  margin-bottom: 15px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-btn{
+  background-color: hotpink;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  text-decoration: dashed;
+  margin-bottom: 10px;
+  font-weight: bold;
+  width:145px
+}
+
+.summary-item:hover {
+  background-color: #e9ecef;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.expense-item {
+  cursor: pointer; /* Show pointer cursor on hover to indicate clickability */
+}
+
+.collapsible-content {
+  padding: 10px;
+  background: #f9f9f9;
+  border-top: 1px solid #ddd;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+.expense-split-info {
+  padding: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.expense-split-info:last-child {
+  border-bottom: none;
 }
