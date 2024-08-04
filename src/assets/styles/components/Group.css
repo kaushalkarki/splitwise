@@ -7,9 +7,8 @@
 .main-content {
   flex: 1;
   padding: 20px;
-  /* border-left: black 2px double; */
-  /* border-right: darkgray 5px solid; */
-
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  /* color: palevioletred; */
 }
 
 #room-name{

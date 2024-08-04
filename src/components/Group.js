@@ -7,6 +7,7 @@ import "../assets/styles/components/Group.css";
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../constant';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import Pagination from './Pagination';
 
 const Group = () => {
   const { user } = useAuth();
@@ -20,6 +21,9 @@ const Group = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showBalances, setShowBalances] = useState(true);
   const [openExpenseId, setOpenExpenseId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const perPage = 10;
 
   const handleToggle = () => {
     setShowBalances(!showBalances);
@@ -37,34 +41,34 @@ const Group = () => {
           setGroup(data.group);
         } else {
           console.error('Error fetching group data:', response.statusText);
-          navigate(-1);  // Navigate back to the previous page
+          navigate(-1);
         }
       } catch (error) {
         console.error('Error fetching group data:', error);
       }
     };
 
-    const fetchGroupUsersAndExpenses = async () => {
+    const fetchGroupUsersAndExpenses = async (page) => {
       try {
         const [usersResponse, expensesResponse] = await Promise.all([
           fetch(`${API_BASE_URL}/groups/${id}/get_group_users`),
-          fetch(`${API_BASE_URL}/groups/${id}/expenses`)
+          fetch(`${API_BASE_URL}/groups/${id}/expenses?page=${page}&limit=${perPage}`)
         ]);
 
         const data = await usersResponse.json();
-        console.log(data);
         const expensesData = await expensesResponse.json();
         const userDict = data.users.reduce((acc, u) => {
-          acc[u.id] = u.id === user.id ? "you" : u.name;
+          acc[u.id] = u.id === user.id ? "You" : u.name;
           return acc;
         }, {});
         setGroupUsers(userDict);
-        console.log(groupUsers);
         const expensesWithUsernames = expensesData.expenses.map(expense => ({
           ...expense,
           payerName: userDict[expense.payer] || 'Unknown User'
         }));
         setExpenses(expensesWithUsernames);
+        const total_page = Math.ceil((expensesData.meta.count / expensesData.meta.per_page));
+        setTotalPages(total_page);
       } catch (error) {
         console.error('Error fetching group users or expenses:', error);
       }
@@ -82,10 +86,9 @@ const Group = () => {
     };
 
     fetchGroup();
-    fetchGroupUsersAndExpenses();
+    fetchGroupUsersAndExpenses(currentPage);
     fetchBalances();
-    // eslint-disable-next-line
-  }, [id]);
+  }, [id, currentPage]);
 
   const handleDeleteExpense = async (expenseId) => {
     try {
@@ -183,6 +186,11 @@ const Group = () => {
             </>
           ))}
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
       <div className="additional-content">
         <button onClick={handleToggle} className='toggle-btn'>

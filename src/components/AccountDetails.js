@@ -36,7 +36,7 @@ const AccountDetails = () => {
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`);
       const res = await response.json();
       const data = res.user;
-      const url = API_BASE_URL
+      const url = API_BASE_URL;
 
       setUserDetails({
         name: data.name,
@@ -60,15 +60,18 @@ const AccountDetails = () => {
 
   const handleSaveClick = async () => {
     const userDetailsToUpdate = { ...userDetails };
+
+    // Do not include password if it hasn't been changed
     if (userDetails.password === '**********') {
       delete userDetailsToUpdate.password;
     }
 
     const formData = new FormData();
+
     Object.keys(userDetailsToUpdate).forEach(key => {
       if (key === 'image' && userDetailsToUpdate.image.file) {
         formData.append(`user[${key}]`, userDetailsToUpdate.image.file);
-      } else {
+      } else if (key !== 'image') {
         formData.append(`user[${key}]`, userDetailsToUpdate[key]);
       }
     });
@@ -79,8 +82,8 @@ const AccountDetails = () => {
         body: formData,
       });
       if (response.ok) {
-        window.location.reload();
         setIsEditing({ name: false, email: false, phone: false, password: false, image: false });
+        fetchUserDetails(); // Fetch the updated user details
       } else {
         alert('Failed to save user details');
       }
@@ -125,9 +128,9 @@ const AccountDetails = () => {
           className="avatar"
         />
         <div className="avatar-upload">
-        <label>Change your avatar</label>
-        <input type="file" onChange={handleAvatarChange} />
-      </div>
+          <label>Change your avatar</label>
+          <input type="file" onChange={handleAvatarChange} />
+        </div>
         <div className="details">
           <div className="detail-item">
             <label>Your name</label>
