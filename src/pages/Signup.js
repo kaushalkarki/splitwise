@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import logo from '../assets/images/logo-only.svg'; // Adjust the path to your logo
+import logo from '../assets/images/logo.png'; // Adjust the path to your logo
 import '../assets/styles/pages/SignUp.css';
 import { useAuth } from '../context/AuthContext';
 import { handleGoogleLoginSuccess } from '../utils/auth.js';

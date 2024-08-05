@@ -68,7 +68,7 @@ export default function CustomizedMenus({ handleLogout, navigate, user }) {
         onClick={handleClick}
         endIcon={<KeyboardArrowDownIcon />}
         sx={{
-          backgroundColor: "#5bc5a7",
+          backgroundColor: "#20b2aa",
           '&:hover': {
             backgroundColor: "#48be9d",
           },

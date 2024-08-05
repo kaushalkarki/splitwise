@@ -9,6 +9,7 @@ import Group from './components/Group';
 import AccountDetails from './components/AccountDetails';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
+import Footer from './components/Footer';
 const App = () => {
   const location = useLocation();
 
@@ -32,6 +33,7 @@ const App = () => {
           element={<ProtectedRoute element={<Group />} />}
         />
       </Routes>
+      {location.pathname !== '/signup' && location.pathname !== '/login' && <Footer />}
     </>
   );
 };

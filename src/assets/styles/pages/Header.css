@@ -5,7 +5,7 @@
   padding: 10px 20px;
   background-color: #f8f9fa;
   border-bottom: 1px solid #dee2e6;
-  background-color: #5bc5a7;
+  background-color: lightseagreen;
 }
 
 .left-side {
@@ -16,7 +16,7 @@
 
 .logo {
   height: 40px;
-  /* width: 100px; */
+  border-radius: 50%;
   margin-right: 10px;
 }
 .left-side p{
@@ -55,4 +55,8 @@
 
 .home-div{
   cursor: pointer;
+  margin-right: 10px;
+  font-weight: bold;
+  color: white;
+  display: contents;
 }

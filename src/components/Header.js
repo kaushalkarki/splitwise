@@ -1,10 +1,11 @@
 import React from 'react';
 import '../assets/styles/pages/Header.css';
-// import logo from '../assets/images/logo.svg';
+import logo from '../assets/images/logo.png';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import CustomizedMenus from '../components/CustomizedMenus';
 import { API_BASE_URL } from '../constant';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -40,13 +41,14 @@ const Header = () => {
   return (
     <div className="header">
       <div className="left-side">
-        <img src={"https://flyclipart.com/thumb2/anarchy-png-images-transparent-free-download-501947.png"} alt="Logo" className="logo" />
+        <img src={logo} alt="Logo" className="logo" />
         <p>Splits</p>
         <h4>by KK INC</h4>
       </div>
       <div className="right-side">
         {location.pathname !== '/dashboard' && (
-          <div className="home-div" onClick={dashboardPage}>Home</div>
+          <div className="home-div" onClick={dashboardPage}>
+            <HomeRoundedIcon/></div>
         )}
         <CustomizedMenus handleLogout={handleLogout} navigate={navigate} user={user} />
       </div>

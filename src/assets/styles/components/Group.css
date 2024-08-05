@@ -2,6 +2,8 @@
 
 .dashboard {
   display: flex;
+  height: fit-content;
+  box-sizing: border-box;
 }
 
 .main-content {
