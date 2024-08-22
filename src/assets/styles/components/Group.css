@@ -15,15 +15,18 @@
 
 #room-name{
   color: #999;
-  font-family:cursive;
+  /* font-family:cursive; */
+  color: darkseagreen;
+  font-size: xxx-large;
 }
 
 .grid-item.first-grid {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  box-shadow: 0px 0px 6px 8px darkgray;}
+  /* margin-bottom: 30px; */
+  /* box-shadow: 0px 0px 6px 8px darkgray; */
+}
 
 .button-container {
   display: flex;
@@ -72,7 +75,8 @@
   flex: 0.5;
   margin-left: 20px;
   font-weight: bold;
-  text-decoration: underline;
+  /* text-decoration: underline; */
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   color: #2d3436;
 }
 
@@ -80,6 +84,8 @@
   width: 100px;
   text-align: right;
   font-weight: bold;
+  font-family:Arial, Helvetica, sans-serif;
+  color: #2d3436;
 }
 
 .expense-payer {
@@ -88,6 +94,7 @@
   color: grey;
   font-size: small;
   border: 2 px solid aqua;
+  margin-bottom: 10px;
 }
 
 .delete-div{
@@ -132,7 +139,7 @@ margin-left: 10px;
 .additional-content {
   margin: 8rem 5rem 0 5rem;
   width: 10%;
-  height: 100vh;
+  height: initial;
   /* background-color: grey; */
 }
 

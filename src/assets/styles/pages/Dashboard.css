@@ -69,8 +69,8 @@
 }
 
 .grid-item {
-  background-color: #f0f0f0;
-  padding: 20px;
+  /* background-color: #f0f0f0; */
+  padding: 0px 20px 0 20px;
   border-radius: 8px;
   display: flex; /* Use flexbox for one-line layout */
   align-items: center; /* Align items vertically */
@@ -78,22 +78,35 @@
 }
 
 .first-grid {
-  font: 2em sans-serif;
+  /* font: 2em sans-serif; */
   font-weight: bold;
 }
+
+#dash-exp{
+  background-color: white;
+  height: 50vh;
+  font-size: small;
+}
+#exp-header{
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#dash_btn{
+  background-color: red;
+
+}
 .second-grid {
-  display: grid;
+  display: flex;
   grid-template-columns: 1fr 1fr 1fr; /* Three columns with equal width */
   gap: 10px; /* Gap between grid items */
-  justify-content: center;
+  justify-content:space-around;
   align-items: center;
+  text-align: center;
 }
 .second-grid div{
-  border-top: 2px solid black;
-  border-bottom: 2px solid black;
   justify-content: center;
   align-items: center;
-
 }
 .grid-item h3 {
   margin-right: 10px;

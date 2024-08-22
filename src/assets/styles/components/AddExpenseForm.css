@@ -94,12 +94,14 @@
 }
 
 .user-item {
+  display: flex;
   padding: 12px; /* Padding around each user item */
   cursor: pointer; /* Pointer cursor on hover */
   border-radius: 6px; /* Rounded corners for user items */
   transition: background-color 0.3s, transform 0.3s; /* Smooth transitions */
   border: 1px solid #ddd; /* Border around each item */
   background-color: #fafafa; /* Light background for items */
+  justify-content: space-between;
 }
 
 .user-item.selected {

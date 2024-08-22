@@ -44,7 +44,8 @@ const AccountDetails = () => {
         phone: data.phone,
         password: '**********',
         image: {
-          preview: url + data.image.url // Set preview URL
+          preview: data.image?.url ? url + data.image.url : DefaultAvatar, // Set preview URL or default avatar
+          file: null // Ensure file is null on initial load
         }
       });
     } catch (error) {

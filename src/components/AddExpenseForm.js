@@ -3,6 +3,7 @@ import '../assets/styles/components/AddExpenseForm.css';
 import Modal from '../components/Modal'; // Import the Modal component
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../constant';
+import TextField from '@mui/material/TextField';
 
 const AddExpenseForm = ({ onClose, groupId, groupName }) => {
   const { user } = useAuth(); // Get the logged-in user from AuthContext
@@ -159,24 +160,26 @@ const AddExpenseForm = ({ onClose, groupId, groupName }) => {
       <form className="add-expense-form" onSubmit={handleSubmit}>
         <h2>Add an expense</h2>
         <label>
-          Enter a description
-          <input
+          {/* Enter a description */}
+          {/* <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Description"
             required
-          />
+          /> */}
+           <TextField id="outlined-basic" type='string' label="Description" variant="outlined" onChange={(e) => setDescription(e.target.value)}/>
         </label>
         <label>
-          Amount
-          <input
+          {/* Amount */}
+          {/* <input
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="0.00"
             required
-          />
+          /> */}
+           <TextField id="outlined-basic" type='integer'  label="Amount" variant="outlined" onChange={(e) =>  setAmount(e.target.value)}/>
         </label>
         <div className="paid-split-container">
           <p>
@@ -235,19 +238,22 @@ const AddExpenseForm = ({ onClose, groupId, groupName }) => {
           <div className="user-list">
             {users.map((user) => (
               <div key={user.id} className="user-item">
+                <div>
                 <input
                   type="checkbox"
                   checked={selectedSplitUsers[user.id]}
                   onChange={() => handleCheckboxChange(user.id)}
                 />
                 {user.name}
-                <input
+                </div>
+                {/* <input
                   type="number"
                   placeholder="0.00"
                   value={splitEquallyAmounts[user.id] || ''}
                   onChange={(e) => handleSplitEquallyAmountChange(user.id, e.target.value)}
                   style={{ marginLeft: 'auto' }}
-                />
+                /> */}
+                 <TextField id="outlined-basic" type='integer' value={splitEquallyAmounts[user.id] || ''} label="Amount" variant="outlined" onChange={(e) => handleSplitEquallyAmountChange(user.id, e.target.value)}/>
               </div>
             ))}
           </div>
