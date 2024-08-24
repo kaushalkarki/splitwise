@@ -97,6 +97,14 @@
   margin-bottom: 10px;
 }
 
+.lent{
+  color: green;
+}
+
+.owes{
+  color: red;
+}
+
 .delete-div{
 margin-left: 10px;
 }

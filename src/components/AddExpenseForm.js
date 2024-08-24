@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../constant';
 import TextField from '@mui/material/TextField';
 
-const AddExpenseForm = ({ onClose, groupId, groupName }) => {
+const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved }) => {
   const { user } = useAuth(); // Get the logged-in user from AuthContext
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
@@ -14,12 +14,11 @@ const AddExpenseForm = ({ onClose, groupId, groupName }) => {
   const [isPaidByModalOpen, setIsPaidByModalOpen] = useState(false);
   const [isSplitEquallyModalOpen, setIsSplitEquallyModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]); // Initialize as an empty array
-  const [selectedUser, setSelectedUser] = useState(user ? user.id : null); // Initialize with logged-in user
-  const [selectedUserName, setSelectedUserName] = useState(user ? user.name : 'you'); // Initialize with logged-in user's name or 'you'
-  const [splitEquallyAmounts, setSplitEquallyAmounts] = useState({}); // Initialize as an empty object for split equally amounts
-  const [selectedSplitUsers, setSelectedSplitUsers] = useState({}); // Initialize as an empty object for split equally checkboxes
-
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(user ? user.id : null);
+  const [selectedUserName, setSelectedUserName] = useState(user ? user.name : 'you');
+  const [splitEquallyAmounts, setSplitEquallyAmounts] = useState({});
+  const [selectedSplitUsers, setSelectedSplitUsers] = useState({});
   useEffect(() => {
     fetchUsers();
   // eslint-disable-next-line
@@ -76,7 +75,7 @@ const AddExpenseForm = ({ onClose, groupId, groupName }) => {
         payer: selectedUser,
         expense_split: splitAmounts,
         transaction_date: date,
-        group_id: groupId, // Include the group ID in the expense data
+        group_id: groupId,
       },
     };
 
@@ -90,8 +89,7 @@ const AddExpenseForm = ({ onClose, groupId, groupName }) => {
       });
 
       if (response.ok) {
-        // Handle success
-        window.location.reload();
+        onDataSaved();
         onClose();
       } else {
         // Handle error
@@ -160,25 +158,9 @@ const AddExpenseForm = ({ onClose, groupId, groupName }) => {
       <form className="add-expense-form" onSubmit={handleSubmit}>
         <h2>Add an expense</h2>
         <label>
-          {/* Enter a description */}
-          {/* <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Description"
-            required
-          /> */}
            <TextField id="outlined-basic" type='string' label="Description" variant="outlined" onChange={(e) => setDescription(e.target.value)}/>
         </label>
         <label>
-          {/* Amount */}
-          {/* <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="0.00"
-            required
-          /> */}
            <TextField id="outlined-basic" type='integer'  label="Amount" variant="outlined" onChange={(e) =>  setAmount(e.target.value)}/>
         </label>
         <div className="paid-split-container">
@@ -231,7 +213,7 @@ const AddExpenseForm = ({ onClose, groupId, groupName }) => {
 
       {/* Split Equally Modal */}
       <Modal isOpen={isSplitEquallyModalOpen} onClose={handleSplitEquallyModalClose} className="modal-2">
-        <h2>Split Equally Modal</h2>
+        <h2>Split Equally</h2>
         {loading ? (
           <p>Loading...</p>
         ) : (
@@ -246,13 +228,6 @@ const AddExpenseForm = ({ onClose, groupId, groupName }) => {
                 />
                 {user.name}
                 </div>
-                {/* <input
-                  type="number"
-                  placeholder="0.00"
-                  value={splitEquallyAmounts[user.id] || ''}
-                  onChange={(e) => handleSplitEquallyAmountChange(user.id, e.target.value)}
-                  style={{ marginLeft: 'auto' }}
-                /> */}
                  <TextField id="outlined-basic" type='integer' value={splitEquallyAmounts[user.id] || ''} label="Amount" variant="outlined" onChange={(e) => handleSplitEquallyAmountChange(user.id, e.target.value)}/>
               </div>
             ))}

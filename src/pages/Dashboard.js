@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../assets/styles/pages/Dashboard.css';
 import Modal from '../components/Modal';
 import AddExpenseForm from '../components/AddExpenseForm';
+import SettleUpForm from '../components/SettleUpForm';
 import { API_BASE_URL } from '../constant';
 import Sidebar from '../components/Sidebar';
 import Card from '@mui/material/Card';
@@ -12,9 +13,11 @@ import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const openSettleModal = () => setIsSettleModalOpen(true);
+  const closeSettleModal = () => setIsSettleModalOpen(false);
   const [expense, setExpense] = useState([]);
   const [users, setUsers] = useState([])
   const { user } = useAuth()
@@ -46,7 +49,7 @@ const Dashboard = () => {
               <h3>Dashboard</h3>
               <div className="button-container">
                 <button className="orange-button" onClick={openModal}>Add an expense</button>
-                <button className="green-button">Settle up</button>
+                <button className="green-button" onClick={openSettleModal}>Settle up</button>
               </div>
             </div>
             <Divider/>
@@ -80,6 +83,9 @@ const Dashboard = () => {
       <div className='additional-content'></div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <AddExpenseForm onClose={closeModal} />
+      </Modal>
+      <Modal isOpen={isSettleModalOpen} onClose={closeSettleModal}>
+        <SettleUpForm onClose={closeSettleModal} />
       </Modal>
     </div>
   );
