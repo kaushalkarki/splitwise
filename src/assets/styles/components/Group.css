@@ -240,3 +240,26 @@ margin-left: 10px;
 .expense-split-info:last-child {
   border-bottom: none;
 }
+
+.react-tabs__tab-list {
+  border-bottom: 2px solid #ddd;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  list-style-type: none;
+  /* color: red; */
+}
+
+.react-tabs__tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  font-weight: bolder;
+  margin-right: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.react-tabs__tab--selected {
+  font-weight: bolder;
+  color: teal !important;
+}

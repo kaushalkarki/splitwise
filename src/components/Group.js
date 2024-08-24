@@ -8,8 +8,12 @@ import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../constant';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Pagination from './Pagination';
+import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import { useUserContext } from '../context/UserContext';
 
 const Group = () => {
+  const userMap = useUserContext(); 
   const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -17,8 +21,10 @@ const Group = () => {
   const [expenses, setExpenses] = useState([]);
   const [groupUsers, setGroupUsers] = useState({});
   const [balances, setBalances] = useState([]);
+  const [settle, setSettle] = useState([]);
   const [summary, setSummary] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSettleModalOpen, setIsSettleModalOpen] = useState(false);
   const [showBalances, setShowBalances] = useState(true);
   const [openExpenseId, setOpenExpenseId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,6 +37,9 @@ const Group = () => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const openSettleModal = () => setIsSettleModalOpen(true);
+  const closeSettleModal = () => setIsSettleModalOpen(false);
 
   useEffect(() => {
     const fetchGroup = async () => {
@@ -50,13 +59,15 @@ const Group = () => {
 
     const fetchGroupUsersAndExpenses = async (page) => {
       try {
-        const [usersResponse, expensesResponse] = await Promise.all([
+        const [usersResponse, expensesResponse, settleResponse] = await Promise.all([
           fetch(`${API_BASE_URL}/groups/${id}/get_group_users`),
-          fetch(`${API_BASE_URL}/groups/${id}/expenses?page=${page}&limit=${perPage}`)
+          fetch(`${API_BASE_URL}/groups/${id}/expenses?page=${page}&limit=${perPage}`),
+          fetch(`${API_BASE_URL}/groups/${id}/settle_up?page=${page}&limit=${perPage}`)
         ]);
 
         const data = await usersResponse.json();
         const expensesData = await expensesResponse.json();
+        const settleData = await settleResponse.json();
         const userDict = data.users.reduce((acc, u) => {
           acc[u.id] = u.id === user.id ? "You" : u.name;
           return acc;
@@ -69,6 +80,7 @@ const Group = () => {
         setExpenses(expensesWithUsernames);
         const total_page = Math.ceil((expensesData.meta.count / expensesData.meta.per_page));
         setTotalPages(total_page);
+        setSettle(settleData.settle)
       } catch (error) {
         console.error('Error fetching group users or expenses:', error);
       }
@@ -124,10 +136,17 @@ const Group = () => {
             <button className="orange-button" onClick={openModal}>
               Add an expense
             </button>
-            <button className="green-button">Settle up</button>
+            <button className="green-button" onClick={openSettleModal}>Settle up</button>
           </div>
         </div>
-        <div className="expenses-list">
+        <Tabs>
+          <TabList id='tabs'>
+            <Tab>Expenses</Tab>
+            <Tab>Settle Up</Tab>
+          </TabList>
+
+          <TabPanel>
+            <div className="expenses-list">
           {expenses.map((expense) => (
             <>
               <div key={expense.id} className="expense-item" onClick={() => handleExpenseClick(expense.id)}>
@@ -191,6 +210,34 @@ const Group = () => {
           totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
+          </TabPanel>
+          <TabPanel>
+          <div className="expense-item">
+            <div className="expense-date">Date</div>
+            <div className="expense-payer">Paid</div>
+            <div className="expense-payer">Received</div>
+            <div className="expense-payer">Amount</div>
+            <div></div>
+          </div>
+          {settle.map((settle) => (
+            <>
+              <div key={settle.id} className="expense-item">
+                <div className="expense-date">{new Date(settle.settle_date).toLocaleDateString()}</div>
+                <div className="expense-payer">{userMap[settle.sender]}</div>
+                <div className="expense-payer">{userMap[settle.receiver]}</div>
+                <div className="expense-payer">{settle.amount}</div>
+                <div className='delete-div'>
+                  <button className="delete-button" onClick={() => handleDeleteExpense(settle.id)}>
+                    <DeleteOutlineIcon />
+                  </button>
+                </div>
+                </div>
+                </>))}
+          </TabPanel>
+        </Tabs>
+        <div>
+        
+        </div>
       </div>
       <div className="additional-content">
         <button onClick={handleToggle} className='toggle-btn'>
@@ -224,6 +271,9 @@ const Group = () => {
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <AddExpenseForm onClose={closeModal} groupId={group.id} groupName={group.name} />
+      </Modal>
+      <Modal isOpen={isSettleModalOpen} onClose={closeSettleModal}>
+        {/* <AddExpenseForm onClose={closeModal} groupId={group.id} groupName={group.name} /> */}
       </Modal>
     </div>
   );

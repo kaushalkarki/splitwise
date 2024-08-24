@@ -10,6 +10,7 @@ import AccountDetails from './components/AccountDetails';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Footer from './components/Footer';
+import { UserProvider } from './context/UserContext';
 const App = () => {
   const location = useLocation();
 
@@ -41,7 +42,9 @@ const App = () => {
 const Root = () => (
   <Router>
     <AuthProvider>
+      <UserProvider>
       <App />
+      </UserProvider>
     </AuthProvider>
   </Router>
 );
