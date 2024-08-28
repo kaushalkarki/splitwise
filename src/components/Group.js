@@ -170,13 +170,13 @@ const Group = () => {
                 <div className="expense-date">{new Date(expense.transaction_date).toLocaleDateString()}</div>
                 <div className="expense-description">{expense.description}</div>
                 <div>
-                  <div className="expense-payer">{expense.payer == user.id ? 'You paid' : userMap[expense.payer]   + " paid"}</div>
+                  <div className="expense-payer">{expense.payer === user.id ? 'You paid' : userMap[expense.payer]   + " paid"}</div>
                   <div className="expense-amount">{expense.amount}</div>
                 </div>
                 <div>
                   {expense.payer === user.id && !expense.expense_splits.some(split => split.user_id === user.id) ? (
                     <div>
-                      <div className="expense-payer">{expense.payer == user.id ? 'You lent' : userMap[expense.payer] + " lent"}</div>
+                      <div className="expense-payer">{expense.payer === user.id ? 'You lent' : userMap[expense.payer] + " lent"}</div>
                       <div className="expense-amount lent">{expense.amount}</div>
                     </div>
                   ) : expense.expense_splits.some(split => split.user_id === user.id) ? (
@@ -184,7 +184,7 @@ const Group = () => {
                       if (expense.payer === user.id && ele.user_id === user.id) {
                         return (
                           <div key={ele.user_id}>
-                            <div className="expense-payer">{expense.payer == user.id ? 'You lent' : userMap[expense.payer] + " lent"}</div>
+                            <div className="expense-payer">{expense.payer === user.id ? 'You lent' : userMap[expense.payer] + " lent"}</div>
                             <div className="expense-amount lent">{expense.amount - ele.user_amount}</div>
                           </div>
                         );

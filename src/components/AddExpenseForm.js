@@ -6,7 +6,7 @@ import { API_BASE_URL } from '../constant';
 import TextField from '@mui/material/TextField';
 
 const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved }) => {
-  const { user } = useAuth(); // Get the logged-in user from AuthContext
+  const { user } = useAuth();
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);

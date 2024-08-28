@@ -11,6 +11,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Footer from './components/Footer';
 import { UserProvider } from './context/UserContext';
+import GroupCreation from './components/GroupCreation';
 const App = () => {
   const location = useLocation();
 
@@ -28,6 +29,10 @@ const App = () => {
         <Route
           path="/account-details"
           element={<ProtectedRoute element={<AccountDetails />} />}
+        />
+        <Route
+          path="/create-group"
+          element={<ProtectedRoute element={<GroupCreation />} />}
         />
         <Route
           path="/groups/:id"
