@@ -221,12 +221,12 @@ const Group = () => {
               )}
             </>
           ))}
-        </div>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+            </div>
+        {expenses.length > 0 &&  <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />}
           </TabPanel>
           <TabPanel>
           <div className="expense-item">
