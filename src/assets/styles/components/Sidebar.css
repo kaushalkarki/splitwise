@@ -51,6 +51,10 @@
   padding: 0;
 }
 
+.sidebar-menu ul li {
+  margin-bottom: 10px;
+}
+
 .menu-item {
   display: block;
   padding: 10px;

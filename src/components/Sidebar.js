@@ -35,7 +35,7 @@ const Sidebar = () => {
       <div className="sidebar-menu">
         <ul>
           <li><Link to="/dashboard" className="menu-item">Dashboard</Link></li>
-          <li><Link to="/expenses" className="menu-item">Expenses</Link></li>
+          <li><Link to="" disabled className="menu-item">Expenses</Link></li>
           <li>
             <div className="menu-item">Groups</div>
             {loading && <div>Loading...</div>}

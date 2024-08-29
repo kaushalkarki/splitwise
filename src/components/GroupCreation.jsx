@@ -84,7 +84,7 @@ const GroupCreation = () => {
         </div>
         {memberVisible && <div className="form-group">
           <label>GROUP MEMBERS</label>
-          <div className="member-inputs">
+          <div className="member-inputs default">
           <TextField id="outlined-basic" type='string' disabled autoComplete="off" label="Name" variant="standard" value={user.name} />
           <TextField id="outlined-basic" type='string' disabled autoComplete="off" label="Email address" variant="standard" value={members[0]} />
           </div>
@@ -107,7 +107,7 @@ const GroupCreation = () => {
           <button type="button" onClick={addMember}>+ Add a person</button>
         </div>
         }
-        <button type="submit" className="save-button">Save</button>
+        <div><button type="submit" className="save-button">Save</button></div>
       </form>
     </div>
   );

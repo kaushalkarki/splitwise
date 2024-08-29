@@ -1,9 +1,10 @@
 .group-creation-container {
   max-width: 500px;
-  margin: auto;
+  margin: 20px 10px 25px 500px;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  min-height: 70vh;
 }
 
 .form-group {
