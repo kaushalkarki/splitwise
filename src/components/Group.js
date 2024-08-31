@@ -5,7 +5,7 @@ import Modal from './Modal';
 import AddExpenseForm from './AddExpenseForm';
 import "../assets/styles/components/Group.css";
 import { useAuth } from '../context/AuthContext';
-import { API_BASE_URL } from '../constant';
+import { API_BASE_URL, getHeaders } from '../constant';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Pagination from './Pagination';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
@@ -15,7 +15,7 @@ import SettleUpForm from './SettleUpForm';
 
 const Group = () => {
   const userMap = useUserContext();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const [group, setGroup] = useState(null);
@@ -46,9 +46,14 @@ const Group = () => {
   const closeSettleModal = () => setIsSettleModalOpen(false);
 
   useEffect(() => {
+    setCurrentPage(1);
+    setCurrentSettlePage(1);
+  }, [id]); 
+
+  useEffect(() => {
     const fetchGroup = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/groups/${id}`);
+        const response = await fetch(`${API_BASE_URL}/groups/${id}`, {headers: getHeaders(token)});
         if (response.ok) {
           const data = await response.json();
           setGroup(data.group);
@@ -64,9 +69,9 @@ const Group = () => {
     const fetchGroupUsersAndExpenses = async (page,settle_page ) => {
       try {
         const [usersResponse, expensesResponse, settleResponse] = await Promise.all([
-          fetch(`${API_BASE_URL}/groups/${id}/get_group_users`),
-          fetch(`${API_BASE_URL}/groups/${id}/expenses?page=${page}&limit=${perPage}`),
-          fetch(`${API_BASE_URL}/groups/${id}/settle_up?page=${settle_page}&limit=${perPage}`)
+          fetch(`${API_BASE_URL}/groups/${id}/get_group_users`, {headers: getHeaders(token)}),
+          fetch(`${API_BASE_URL}/groups/${id}/expenses?page=${page}&limit=${perPage}`, {headers: getHeaders(token)}),
+          fetch(`${API_BASE_URL}/groups/${id}/settle_up?page=${settle_page}&limit=${perPage}`, {headers: getHeaders(token)})
         ]);
 
         const data = await usersResponse.json();
@@ -84,7 +89,7 @@ const Group = () => {
 
     const fetchBalances = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/groups/${id}/balances`);
+        const response = await fetch(`${API_BASE_URL}/groups/${id}/balances`, {headers: getHeaders(token)});
         const data = await response.json();
         setBalances(data.total);
         setSummary(data.summary);
@@ -107,6 +112,7 @@ const Group = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/expenses/${expenseId}`, {
         method: 'DELETE',
+        headers: getHeaders(token)
       });
       if (response.ok) {
         setExpenses(expenses.filter(expense => expense.id !== expenseId));
@@ -123,6 +129,7 @@ const Group = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/settles/${settleId}`, {
         method: 'DELETE',
+        headers: getHeaders(token)
       });
       if (response.ok) {
         setSettle(settle.filter(settle => settle.id !== settleId));
@@ -165,8 +172,8 @@ const Group = () => {
           <TabPanel>
             <div className="expenses-list">
           {expenses.map((expense) => (
-            <>
-              <div key={expense.id} className="expense-item" onClick={() => handleExpenseClick(expense.id)}>
+            <div key={expense.id}>
+              <div className="expense-item" onClick={() => handleExpenseClick(expense.id)}>
                 <div className="expense-date">{new Date(expense.transaction_date).toLocaleDateString()}</div>
                 <div className="expense-description">{expense.description}</div>
                 <div>
@@ -219,7 +226,7 @@ const Group = () => {
                   ))}
                 </div>
               )}
-            </>
+            </div>
           ))}
             </div>
         {expenses.length > 0 &&  <Pagination
@@ -237,8 +244,8 @@ const Group = () => {
             <div></div>
           </div>
           {settle.map((settle) => (
-            <>
-              <div key={settle.id} className="expense-item">
+            <div key={settle.id}>
+              <div className="expense-item">
                 <div className="expense-date">{new Date(settle.settle_date).toLocaleDateString()}</div>
                 <div className="settle-payer">{userMap[settle.sender]}</div>
                 <div className="settle-payer">{userMap[settle.receiver]}</div>
@@ -249,7 +256,7 @@ const Group = () => {
                   </button>
                 </div>
                 </div>
-                </>))}
+                </div>))}
           </TabPanel>
         </Tabs>
         <div>

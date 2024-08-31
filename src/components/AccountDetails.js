@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import DefaultAvatar from "../assets/images/default-avatar.jpeg";
 import '../assets/styles/components/AccountDetails.css';
-import { API_BASE_URL } from '../constant';
+import { API_BASE_URL, getHeaders } from '../constant';
 
 const AccountDetails = () => {
   const [isEditing, setIsEditing] = useState({
@@ -23,7 +23,7 @@ const AccountDetails = () => {
     }
   });
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   useEffect(() => {
     fetchUserDetails();
@@ -33,7 +33,7 @@ const AccountDetails = () => {
   const fetchUserDetails = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/users/${user.id}`);
+      const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {headers: getHeaders(token)});
       const res = await response.json();
       const data = res.user;
       const url = API_BASE_URL;
@@ -81,6 +81,7 @@ const AccountDetails = () => {
       const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {
         method: 'PUT',
         body: formData,
+        headers: getHeaders(token)
       });
       if (response.ok) {
         setIsEditing({ name: false, email: false, phone: false, password: false, image: false });

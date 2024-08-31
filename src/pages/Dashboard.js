@@ -3,7 +3,7 @@ import '../assets/styles/pages/Dashboard.css';
 import Modal from '../components/Modal';
 import AddExpenseForm from '../components/AddExpenseForm';
 import SettleUpForm from '../components/SettleUpForm';
-import { API_BASE_URL } from '../constant';
+import { API_BASE_URL, getHeaders } from '../constant';
 import Sidebar from '../components/Sidebar';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -23,7 +23,7 @@ const Dashboard = () => {
   const closeSettleModal = () => setIsSettleModalOpen(false);
   const [expense, setExpense] = useState([]);
   const [users, setUsers] = useState([]);
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const userMap = useUserContext();
   const [total, setTotal] = useState(0);
   const [debt, setDebt] = useState(0);
@@ -33,7 +33,7 @@ const Dashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/users/${user.id}`);
+      const response = await fetch(`${API_BASE_URL}/users/${user.id}`, {headers: getHeaders(token)});
       if (response.ok) {
         const data = await response.json();
         setUsers(data);
@@ -47,7 +47,7 @@ const Dashboard = () => {
 
   const dashboardData = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/users/${user.id}/dashboard_data`);
+      const response = await fetch(`${API_BASE_URL}/users/${user.id}/dashboard_data`, {headers: getHeaders(token)});
       if (response.ok) {
         const data = await response.json();
         setExpense(data);
