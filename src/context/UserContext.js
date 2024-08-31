@@ -3,12 +3,11 @@ import { API_BASE_URL, getHeaders } from '../constant';
 import { useAuth } from './AuthContext';
 
 const UserContext = createContext();
-const { token } =useAuth
 export const useUserContext = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
   const [userMap, setUserMap] = useState({});
-
+  const { token } = useAuth()
   useEffect(() => {
     const fetchUsers = async () => {
       try {
