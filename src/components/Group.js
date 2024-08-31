@@ -14,7 +14,7 @@ import { useUserContext } from '../context/UserContext';
 import SettleUpForm from './SettleUpForm';
 
 const Group = () => {
-  const userMap = useUserContext(); 
+  const userMap = useUserContext();
   const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();

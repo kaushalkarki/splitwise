@@ -8,6 +8,10 @@
   padding: 20px;
 }
 
+#heading{
+  font-size: xxx-large;
+  color: darkseagreen;
+}
 .additional-content .dashboard {
   margin-left: 60px;
   padding: 100px; /* Padding for additional content */
@@ -15,7 +19,7 @@
 }
 
 .content {
-  background-color: #f0f0f0;
+  /* background-color: #f0f0f0; */
   padding: 20px;
   border-radius: 8px;
 }
@@ -39,9 +43,74 @@
 }
 
 #dash-exp {
-  background-color: white;
-  height: 50vh;
-  font-size: small;
+  display: flex;
+  min-height: 60vh;
+}
+
+#dash-exp #left-side, #right-side {
+  flex: 2;
+  flex-direction:column;
+  padding-top: 20px;
+  display:flex;
+}
+
+#left-side{
+  padding-left: 40px;
+}
+#left-side button{
+  background-color:grey;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  font-weight: bolder;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+#right-side{
+  padding-right: 40px;
+}
+
+#right-side button{
+  background-color: grey;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  font-weight: bolder;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+#left-side button:disabled{
+  background-color: #5fcddf;
+  cursor: not-allowed;
+}
+
+#right-side button:disabled{
+  background-color: #5fcddf;
+  cursor: not-allowed;
+}
+.dash-btn{
+  background-color: #ff652f;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: white;
+  font-weight: bolder;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.inner-side-div{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.data-div{
+  padding-left: 30px;
 }
 
 #exp-header {
