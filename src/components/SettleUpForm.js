@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import '../assets/styles/components/AddExpenseForm.css';
 import Modal from './Modal';
 import { useAuth } from '../context/AuthContext';
-import { API_BASE_URL } from '../constant';
+import { API_BASE_URL, getHeaders } from '../constant';
 import TextField from '@mui/material/TextField';
 
 const SettleUpForm = ({ onClose, groupId, groupName,  onDataSaved }) => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
@@ -26,7 +26,7 @@ const SettleUpForm = ({ onClose, groupId, groupName,  onDataSaved }) => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/groups/${groupId}/get_group_users.json`); // Adjust API endpoint as needed
+      const response = await fetch(`${API_BASE_URL}/groups/${groupId}/get_group_users.json`, {headers: getHeaders(token)});
       const data = await response.json();
       if (Array.isArray(data.users)) {
         setUsers(data.users);
@@ -57,9 +57,7 @@ const SettleUpForm = ({ onClose, groupId, groupName,  onDataSaved }) => {
     try {
       const response = await fetch(`${API_BASE_URL}/settles`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getHeaders(token),
         body: JSON.stringify(settleData),
       });
 

@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { API_BASE_URL } from '../constant';
+import { API_BASE_URL, getHeaders } from '../constant';
+import { useAuth } from './AuthContext';
 
 const UserContext = createContext();
-
+const { token } =useAuth
 export const useUserContext = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
@@ -11,7 +12,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/users/users_with_name`);
+        const response = await fetch(`${API_BASE_URL}/users/users_with_name`, {headers: getHeaders(token)});
         const users = await response.json();
 
         const userMap = users.user.reduce((map, user) => {

@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import '../assets/styles/components/GroupCreation.css'
 import TextField from '@mui/material/TextField';
 import { useAuth } from '../context/AuthContext';
-import { API_BASE_URL } from '../constant';
+import { API_BASE_URL, getHeaders } from '../constant';
 
 const GroupCreation = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [groupName, setGroupName] = useState('');
   const [open, setOpen] = useState(false);
   const [memberVisible, setMemberVisible] = useState(false)
@@ -55,9 +55,7 @@ const GroupCreation = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/groups`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getHeaders(token),
         body: JSON.stringify(groupData),
       });
   

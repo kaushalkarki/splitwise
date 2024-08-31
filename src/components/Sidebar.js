@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../assets/styles/components/Sidebar.css';
-import { API_BASE_URL } from '../constant';
+import { API_BASE_URL, getHeaders } from '../constant';
 import TextField from '@mui/material/TextField';
 import Snackbar from '@mui/material/Snackbar';
 
@@ -18,12 +18,12 @@ const Sidebar = () => {
     horizontal: 'center',
   });
   const { vertical, horizontal, open } = state;
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/users/${user.id}/get_users_group`);
+        const response = await fetch(`${API_BASE_URL}/users/${user.id}/get_users_group`, {headers: getHeaders(token)});
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -56,7 +56,7 @@ const Sidebar = () => {
   const sendEmail = async () => {
     const email = inviteEmail;
     try {
-      const response = await fetch(`${API_BASE_URL}/users/send_email?email=${email}`);
+      const response = await fetch(`${API_BASE_URL}/users/send_email?email=${email}`, {headers: getHeaders(token)});
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
