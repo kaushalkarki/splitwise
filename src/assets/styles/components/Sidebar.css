@@ -78,3 +78,40 @@
 .submenu-item:hover {
   background-color: #e9ecef;
 }
+
+.invite{
+  display: grid;
+  /* padding: 10px; */
+  border: 0.5px solid;
+}
+.invite .heading{
+  background-color: #5bc5a7;
+  margin-bottom: 10px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 0.5px solid black;
+  padding: 2px 0 2px 0;
+}
+.invite .email-div{
+  padding: 0 0 10px 10px;
+  font-size: xx-small;
+}
+#email{
+  font-size: small;
+}
+.invite button{
+  color: white;
+  font-weight: bolder;
+  background-color: orange;
+  width: fit-content;
+  height: 80%;
+  border-radius: 3px;
+  margin: 0 0 10px 10px;
+  border: none;
+  font-size: smaller;
+}
+.invite button:disabled{
+  background-color: grey;
+  cursor: not-allowed;
+}

@@ -214,7 +214,7 @@ const Group = () => {
                 <div key={`${expense.id}+collapse`} className='collapsible-content'>
                   {expense.expense_splits.map((split) => (
                     <p key={split.user_id}>
-                      {userMap[split.user_id]} {split.owes === false ? 'paid' : 'owes'} {split.user_amount}
+                      {userMap[split.user_id]} owes {split.user_amount}
                     </p>
                   ))}
                 </div>
@@ -240,9 +240,9 @@ const Group = () => {
             <>
               <div key={settle.id} className="expense-item">
                 <div className="expense-date">{new Date(settle.settle_date).toLocaleDateString()}</div>
-                <div className="expense-payer">{userMap[settle.sender]}</div>
-                <div className="expense-payer">{userMap[settle.receiver]}</div>
-                <div className="expense-payer">{settle.amount}</div>
+                <div className="settle-payer">{userMap[settle.sender]}</div>
+                <div className="settle-payer">{userMap[settle.receiver]}</div>
+                <div className="settle-payer">{settle.amount}</div>
                 <div className='delete-div'>
                   <button className="delete-button" onClick={() => handleDeleteSettle(settle.id)}>
                     <DeleteOutlineIcon />

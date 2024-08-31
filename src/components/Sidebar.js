@@ -3,13 +3,23 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../assets/styles/components/Sidebar.css';
 import { API_BASE_URL } from '../constant';
+import TextField from '@mui/material/TextField';
+import Snackbar from '@mui/material/Snackbar';
 
 const Sidebar = () => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [message, setMessage] = useState('')
+  const [state, setState] = useState({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { vertical, horizontal, open } = state;
   const { user } = useAuth();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     const fetchGroups = async () => {
       try {
@@ -27,8 +37,37 @@ const Sidebar = () => {
     };
 
     fetchGroups();
-    // eslint-disable-next-line
-  }, []);
+  }, [user]);
+
+  const handleClick = (newState) => {
+    setState({ ...newState, open: true });
+  };
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
+
+  // Email validation function
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const sendEmail = async () => {
+    const email = inviteEmail;
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/send_email?email=${email}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();  // Assuming you need to use the data later
+      setMessage(data.message)
+      handleClick({ vertical: 'top', horizontal: 'center' });
+      setInviteEmail('');
+    } catch (error) {
+      console.error('Error sending email:', error);
+    }
+  };
 
   return (
     <div className="sidebar">
@@ -51,6 +90,28 @@ const Sidebar = () => {
           <li><Link to="/settings" className="menu-item">Settings</Link></li>
         </ul>
       </div>
+      <div className='invite'>
+        <div className='heading'>Invite friends</div> 
+        <div className='email-div'>
+          <TextField
+            id="outlined-email"
+            type='email'
+            label="Email"
+            variant="outlined"
+            value={inviteEmail}
+            onChange={(e) => setInviteEmail(e.target.value)}
+          />
+        </div>
+        <button onClick={sendEmail} disabled={!isValidEmail(inviteEmail)}>Send Invite</button>
+      </div>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        message={message}
+        key={vertical + horizontal}
+        autoHideDuration={2000}
+      />
     </div>
   );
 };
