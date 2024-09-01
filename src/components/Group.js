@@ -33,6 +33,7 @@ const Group = () => {
   const [currentSettlePage, setCurrentSettlePage] = useState(1);
   const [totalSettlePages, setTotalSettlePages] = useState(1);
   const [refetchData, setRefetchData] = useState(false);
+  const [currentExpense, setCurrentExpense] = useState(null);
   const perPage = 10;
 
   const handleToggle = () => {
@@ -150,6 +151,21 @@ const Group = () => {
     return <div>Loading...</div>;
   }
 
+  const handleEditExpense = async (expenseId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/expenses/${expenseId}`, { headers: getHeaders(token) });
+      if (response.ok) {
+        const expenseData = await response.json();
+        setCurrentExpense(expenseData);
+        openModal();
+      } else {
+        console.error('Error fetching expense data:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching expense data:', error);
+    }
+  };
+
   return (
     <div className="dashboard">
       <Sidebar />
@@ -224,6 +240,11 @@ const Group = () => {
                       {userMap[split.user_id]} owes {split.user_amount}
                     </p>
                   ))}
+                  <div>
+                  <button className="edit-button" onClick={() => handleEditExpense(expense.id)}>
+                    Edit
+                  </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -298,7 +319,7 @@ const Group = () => {
         )}
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <AddExpenseForm onClose={closeModal} groupId={group.id} groupName={group.name} onDataSaved={handleDataSaved} />
+        <AddExpenseForm onClose={closeModal} groupId={group.id} groupName={group.name} onDataSaved={handleDataSaved} expenseData={currentExpense} />
       </Modal>
       <Modal isOpen={isSettleModalOpen} onClose={closeSettleModal}>
         <SettleUpForm onClose={closeSettleModal} groupId={group.id} groupName={group.name} onDataSaved={handleDataSaved} />

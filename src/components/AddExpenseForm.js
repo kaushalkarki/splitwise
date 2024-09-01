@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import '../assets/styles/components/AddExpenseForm.css';
-import Modal from '../components/Modal'; // Import the Modal component
+import Modal from '../components/Modal';
 import { useAuth } from '../context/AuthContext';
+import { useUserContext } from '../context/UserContext';
 import { API_BASE_URL, getHeaders } from '../constant';
 import TextField from '@mui/material/TextField';
 
-const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved }) => {
+const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved,expenseData = null }) => {
   const { user, token } = useAuth();
-  const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const userMap = useUserContext();
+  const [description, setDescription] = useState(expenseData ? expenseData.description : '');
+  const [amount, setAmount] = useState(expenseData ? expenseData.amount : '');
+  const [date, setDate] = useState(expenseData ? expenseData.transaction_date : new Date().toISOString().split('T')[0]);
+  const [paidBy, setPaidBy] = useState(expenseData ? expenseData.payer : user.id);
 
   const [isPaidByModalOpen, setIsPaidByModalOpen] = useState(false);
   const [isSplitEquallyModalOpen, setIsSplitEquallyModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(user ? user.id : null);
-  const [selectedUserName, setSelectedUserName] = useState(user ? user.name : 'you');
+  const [selectedUser, setSelectedUser] = useState(expenseData ? expenseData.payer: user ? user.id : null);
+  const [selectedUserName, setSelectedUserName] = useState(expenseData ? userMap[expenseData.payer]: user ? user.name : 'you');
   const [splitEquallyAmounts, setSplitEquallyAmounts] = useState({});
   const [selectedSplitUsers, setSelectedSplitUsers] = useState({});
   useEffect(() => {
@@ -26,7 +29,6 @@ const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved }) => {
 
   useEffect(() => {
     if (users.length > 0) {
-      // Default select all users and set initial split amounts
       const initialSplitAmounts = {};
       users.forEach((user) => {
         initialSplitAmounts[user.id] = (amount / users.length).toFixed(2);
@@ -40,6 +42,14 @@ const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved }) => {
     }
   }, [users, amount]);
 
+  useEffect(() => {
+    if (expenseData) {
+      setDescription(expenseData.description);
+      setAmount(expenseData.amount);
+      setDate(expenseData.transaction_date);
+    }
+  }, [expenseData]);
+
   const fetchUsers = async () => {
     setLoading(true);
     try {
@@ -48,12 +58,12 @@ const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved }) => {
       if (Array.isArray(data.users)) {
         setUsers(data.users);
       } else {
-        setUsers([]); // Handle unexpected response structure
+        setUsers([]);
         console.error('Unexpected API response structure:', data);
       }
     } catch (error) {
       console.error('Error fetching users:', error);
-      setUsers([]); // Reset users to an empty array on error
+      setUsers([]);
     } finally {
       setLoading(false);
     }
@@ -61,7 +71,6 @@ const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Gather all the data into an object
     const selectedUsers = Object.keys(selectedSplitUsers).filter((userId) => selectedSplitUsers[userId]);
     const splitAmounts = selectedUsers.map((userId) => ({
       userId,
@@ -156,10 +165,10 @@ const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved }) => {
       <form className="add-expense-form" onSubmit={handleSubmit}>
         <h2>Add an expense</h2>
         <label>
-           <TextField id="outlined-basic" type='string' label="Description" variant="outlined" onChange={(e) => setDescription(e.target.value)}/>
+           <TextField id="outlined-basic" type='string' value={description} label="Description" variant="outlined" onChange={(e) => setDescription(e.target.value)}/>
         </label>
         <label>
-           <TextField id="outlined-basic" type='integer'  label="Amount" variant="outlined" onChange={(e) =>  setAmount(e.target.value)}/>
+           <TextField id="outlined-basic" type='integer' value={amount} label="Amount" variant="outlined" onChange={(e) =>  setAmount(e.target.value)}/>
         </label>
         <div className="paid-split-container">
           <p>
@@ -187,7 +196,6 @@ const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved }) => {
         </div>
       </form>
 
-      {/* Paid By Modal */}
       <Modal isOpen={isPaidByModalOpen} onClose={handlePaidByModalClose} className="modal-1">
         <h2>Paid By Modal</h2>
         {loading ? (
@@ -209,7 +217,6 @@ const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved }) => {
         <button onClick={handlePaidByModalClose}>Close</button>
       </Modal>
 
-      {/* Split Equally Modal */}
       <Modal isOpen={isSplitEquallyModalOpen} onClose={handleSplitEquallyModalClose} className="modal-2">
         <h2>Split Equally</h2>
         {loading ? (
