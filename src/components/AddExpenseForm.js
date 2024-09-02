@@ -6,7 +6,7 @@ import { useUserContext } from '../context/UserContext';
 import { API_BASE_URL, getHeaders } from '../constant';
 import TextField from '@mui/material/TextField';
 
-const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved, expenseData = null }) => {
+const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved, expenseData = null, clearForm = null }) => {
   const { user, token } = useAuth();
   const userMap = useUserContext();
   const [description, setDescription] = useState(expenseData ? expenseData.description : '');
@@ -37,20 +37,32 @@ const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved, expenseData 
   }, []);
 
   useEffect(() => {
-    if (users.length > 0 && !expenseData) {
-      const initialSplitAmounts = {};
-      users.forEach((user) => {
-        initialSplitAmounts[user.id] = (amount / users.length).toFixed(2);
-      });
-      setSplitEquallyAmounts(initialSplitAmounts);
-
-      const initialSelectedUsers = {};
-      users.forEach((user) => {
-        initialSelectedUsers[user.id] = true;
-      });
-      setSelectedSplitUsers(initialSelectedUsers);
+    if (users.length > 0) {
+      if (!expenseData) {
+        const initialSplitAmounts = {};
+        users.forEach((user) => {
+          initialSplitAmounts[user.id] = (amount / users.length).toFixed(2);
+        });
+        setSplitEquallyAmounts(initialSplitAmounts);
+  
+        const initialSelectedUsers = {};
+        users.forEach((user) => {
+          initialSelectedUsers[user.id] = true;
+        });
+        setSelectedSplitUsers(initialSelectedUsers);
+      } else {
+        const updatedSplitAmounts = {};
+        const selectedUserIds = Object.keys(selectedSplitUsers).filter((userId) => selectedSplitUsers[userId]);
+  
+        selectedUserIds.forEach((userId) => {
+          updatedSplitAmounts[userId] = (amount / selectedUserIds.length).toFixed(2);
+        });
+  
+        setSplitEquallyAmounts(updatedSplitAmounts);
+      }
     }
-  }, [users, amount, expenseData]);
+  }, [users, amount, expenseData, selectedSplitUsers]);
+  
 
   useEffect(() => {
     if (expenseData) {
@@ -174,7 +186,10 @@ const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved, expenseData 
   const handleDateChange = (e) => {
     setDate(e.target.value);
   };
-
+  const handleCancelClick = () => {
+    onClose();
+    clearForm()
+  };
   return (
     <div>
       <h2>Group: {groupName}</h2>
@@ -207,7 +222,7 @@ const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved, expenseData 
           />
         </label>
         <div className="button-container">
-          <button type="button" onClick={onClose}>Cancel</button>
+          <button type="button" onClick={handleCancelClick}>Cancel</button>
           <button type="submit">Save</button>
         </div>
       </form>

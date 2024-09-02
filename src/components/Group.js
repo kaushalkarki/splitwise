@@ -109,6 +109,9 @@ const Group = () => {
     setRefetchData(true);
   };
 
+  const clearExpenseData = () =>{
+    setCurrentExpense(null)
+  }
   const handleDeleteExpense = async (expenseId) => {
     try {
       const response = await fetch(`${API_BASE_URL}/expenses/${expenseId}`, {
@@ -319,7 +322,7 @@ const Group = () => {
         )}
       </div>
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <AddExpenseForm onClose={closeModal} groupId={group.id} groupName={group.name} onDataSaved={handleDataSaved} expenseData={currentExpense} />
+        <AddExpenseForm onClose={closeModal} groupId={group.id} groupName={group.name} onDataSaved={handleDataSaved} expenseData={currentExpense} clearForm={clearExpenseData}/>
       </Modal>
       <Modal isOpen={isSettleModalOpen} onClose={closeSettleModal}>
         <SettleUpForm onClose={closeSettleModal} groupId={group.id} groupName={group.name} onDataSaved={handleDataSaved} />
