@@ -129,12 +129,8 @@ margin-left: 10px;
   color:gray;
   font-size: 20px;
   cursor: pointer;
-  visibility: hidden;
-  border-bottom: red 2px solid;
-}
-
-.expense-item:hover .delete-button {
-  visibility: visible;
+  /* visibility: hidden; */
+  /* border-bottom: red 2px solid; */
 }
 
 @media (max-width: 768px) {

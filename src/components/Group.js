@@ -7,11 +7,14 @@ import "../assets/styles/components/Group.css";
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL, getHeaders } from '../constant';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Pagination from './Pagination';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import { useUserContext } from '../context/UserContext';
 import SettleUpForm from './SettleUpForm';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 const Group = () => {
   const userMap = useUserContext();
@@ -34,6 +37,9 @@ const Group = () => {
   const [totalSettlePages, setTotalSettlePages] = useState(1);
   const [refetchData, setRefetchData] = useState(false);
   const [currentExpense, setCurrentExpense] = useState(null);
+  const [menuAnchor, setMenuAnchor] = useState(null);  // Updated state
+  const [selectedExpenseId, setSelectedExpenseId] = useState(null);
+  const open = Boolean(menuAnchor);
   const perPage = 10;
 
   const handleToggle = () => {
@@ -156,6 +162,7 @@ const Group = () => {
 
   const handleEditExpense = async (expenseId) => {
     try {
+      console.log(expenseId);
       const response = await fetch(`${API_BASE_URL}/expenses/${expenseId}`, { headers: getHeaders(token) });
       if (response.ok) {
         const expenseData = await response.json();
@@ -169,6 +176,22 @@ const Group = () => {
     }
   };
 
+  const handleClick = (event) => {
+    setMenuAnchor(event.currentTarget);
+  };
+  const handleClose = () => {
+    setMenuAnchor(null);
+  };
+
+  const handleMenuClick = (event, expenseId) => {
+    event.stopPropagation();
+    setMenuAnchor(event.currentTarget);
+    setSelectedExpenseId(expenseId); // Updated: Set the selected expense ID
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchor(null);
+  };
   return (
     <div className="dashboard">
       <Sidebar />
@@ -192,9 +215,9 @@ const Group = () => {
             <div className="expenses-list">
           {expenses.map((expense) => (
             <div key={expense.id}>
-              <div className="expense-item" onClick={() => handleExpenseClick(expense.id)}>
+              <div className="expense-item">
                 <div className="expense-date">{new Date(expense.transaction_date).toLocaleDateString()}</div>
-                <div className="expense-description">{expense.description}</div>
+                <div className="expense-description" onClick={() => handleExpenseClick(expense.id)}>{expense.description}</div>
                 <div>
                   <div className="expense-payer">{expense.payer === user.id ? 'You paid' : userMap[expense.payer]   + " paid"}</div>
                   <div className="expense-amount">{expense.amount}</div>
@@ -231,9 +254,35 @@ const Group = () => {
                   )}
                 </div>
                 <div className='delete-div'>
-                  <button className="delete-button" onClick={() => handleDeleteExpense(expense.id)}>
-                    <DeleteOutlineIcon />
+                  <button className="delete-button" 
+                  onClick={handleClick}
+                  // onClick={() => handleDeleteExpense(expense.id)}
+                  >
+                  <MoreVertIcon 
+                              aria-controls={`simple-menu-${expense.id}`} 
+                              aria-haspopup="true" 
+                              onClick={(event) => handleMenuClick(event, expense.id)}
+                            />
                   </button>
+                  <Menu
+                    id={`simple-menu-${expense.id}`}
+                    anchorEl={menuAnchor}
+                    open={open && selectedExpenseId === expense.id}
+                    onClose={handleClose}
+                  >
+                    <MenuItem onClick={() => {
+                      handleEditExpense(expense.id);
+                      handleClose();
+                    }}>
+                      Edit
+                    </MenuItem>
+                    <MenuItem onClick={() => {
+                      handleDeleteExpense(expense.id);
+                      handleClose();
+                    }}>
+                      Delete
+                    </MenuItem>
+                  </Menu>
                 </div>
               </div>
               {openExpenseId === expense.id && (
