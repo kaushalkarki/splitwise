@@ -2,22 +2,24 @@ import React, { useState, useEffect } from 'react';
 import '../assets/styles/components/AddExpenseForm.css';
 import Modal from './Modal';
 import { useAuth } from '../context/AuthContext';
+import { useUserContext } from '../context/UserContext';
 import { API_BASE_URL, getHeaders } from '../constant';
 import TextField from '@mui/material/TextField';
 
-const SettleUpForm = ({ onClose, groupId, groupName,  onDataSaved }) => {
+const SettleUpForm = ({ onClose, groupId, groupName, onDataSaved, settleData = null, clearForm = null }) => {
   const { user, token } = useAuth();
-  const [amount, setAmount] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const userMap = useUserContext();
+  const [amount, setAmount] = useState(settleData ? settleData.amount : '' );
+  const [date, setDate] = useState(settleData ? new Date(settleData.settle_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
 
   const [isPaidByModalOpen, setIsPaidByModalOpen] = useState(false);
   const [isReceiverModalOpen, setIsReceiverModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(user ? user.id : null);
-  const [selectedUserName, setSelectedUserName] = useState(user ? user.name : 'you');
-  const [receiverUser, setReceiverUser] = useState(user ? user.id : null);
-  const [receiverUserName, setReceiverUserName] = useState(user ? user.name : 'you');
+  const [selectedUser, setSelectedUser] = useState(settleData ? settleData.sender :user ? user.id : null);
+  const [selectedUserName, setSelectedUserName] = useState(settleData ? userMap[settleData.sender] : user ? user.name : 'you');
+  const [receiverUser, setReceiverUser] = useState(settleData ? settleData.receiver : user ? user.id : null);
+  const [receiverUserName, setReceiverUserName] = useState(settleData ? userMap[settleData.receiver] : user ? user.name : 'you');
 
   useEffect(() => {
     fetchUsers();
@@ -28,6 +30,7 @@ const SettleUpForm = ({ onClose, groupId, groupName,  onDataSaved }) => {
     try {
       const response = await fetch(`${API_BASE_URL}/groups/${groupId}/get_group_users.json`, {headers: getHeaders(token)});
       const data = await response.json();
+      console.log(settleData.settle_date);
       if (Array.isArray(data.users)) {
         setUsers(data.users);
       } else {
@@ -44,7 +47,8 @@ const SettleUpForm = ({ onClose, groupId, groupName,  onDataSaved }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const settleData = {
+    
+    const settleDataPayload = {
       settle: {
         amount,
         sender: selectedUser,
@@ -53,20 +57,23 @@ const SettleUpForm = ({ onClose, groupId, groupName,  onDataSaved }) => {
         group_id: groupId,
       },
     };
-    debugger
-    try {
-      const response = await fetch(`${API_BASE_URL}/settles`, {
-        method: 'POST',
-        headers: getHeaders(token),
-        body: JSON.stringify(settleData),
-      });
 
+    try {
+      const url = settleData 
+        ? `${API_BASE_URL}/settles/${settleData.id}`
+        : `${API_BASE_URL}/settles`;
+    
+      const method = settleData ? 'PUT' : 'POST';
+      const response = await fetch(url, {
+        method,
+        headers: getHeaders(token),
+        body: JSON.stringify(settleDataPayload),
+      });
+    
       if (response.ok) {
-        // Handle success
         onDataSaved();
         onClose();
       } else {
-        // Handle error
         const errorData = await response.json();
         console.error('Error settling up:', errorData);
         alert('Error settling up.');
@@ -75,7 +82,8 @@ const SettleUpForm = ({ onClose, groupId, groupName,  onDataSaved }) => {
       console.error('Error settling up:', error);
       alert('Error settling up.');
     }
-  };
+};
+
 
   const handlePaidByClick = () => {
     setIsPaidByModalOpen(true);
@@ -120,6 +128,7 @@ const SettleUpForm = ({ onClose, groupId, groupName,  onDataSaved }) => {
             type="number"
             label="Amount"
             variant="outlined"
+            value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
         </label>

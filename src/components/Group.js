@@ -37,8 +37,10 @@ const Group = () => {
   const [totalSettlePages, setTotalSettlePages] = useState(1);
   const [refetchData, setRefetchData] = useState(false);
   const [currentExpense, setCurrentExpense] = useState(null);
+  const [currentSettle, setCurrentSettle] = useState(null);
   const [menuAnchor, setMenuAnchor] = useState(null);  // Updated state
   const [selectedExpenseId, setSelectedExpenseId] = useState(null);
+  const [selectedSettleId, setSelectedSettleId] = useState(null);
   const open = Boolean(menuAnchor);
   const perPage = 10;
 
@@ -117,6 +119,7 @@ const Group = () => {
 
   const clearExpenseData = () =>{
     setCurrentExpense(null)
+    setCurrentSettle(null)
   }
   const handleDeleteExpense = async (expenseId) => {
     try {
@@ -167,7 +170,26 @@ const Group = () => {
       if (response.ok) {
         const expenseData = await response.json();
         setCurrentExpense(expenseData);
+        console.log(currentExpense);
         openModal();
+      } else {
+        console.error('Error fetching expense data:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching expense data:', error);
+    }
+  };
+
+  const handleEditSettle = async (expenseId) => {
+    try {
+      console.log(expenseId);
+      const response = await fetch(`${API_BASE_URL}/settles/${expenseId}`, { headers: getHeaders(token) });
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentSettle(data);
+        openSettleModal();
+        console.log(data);
+        console.log(currentSettle);
       } else {
         console.error('Error fetching expense data:', response.statusText);
       }
@@ -183,10 +205,10 @@ const Group = () => {
     setMenuAnchor(null);
   };
 
-  const handleMenuClick = (event, expenseId) => {
-    event.stopPropagation();
+  const handleMenuClick = (event, id) => {
     setMenuAnchor(event.currentTarget);
-    setSelectedExpenseId(expenseId); // Updated: Set the selected expense ID
+    setSelectedExpenseId(id);
+    setSelectedSettleId(id)
   };
 
   const handleMenuClose = () => {
@@ -254,10 +276,7 @@ const Group = () => {
                   )}
                 </div>
                 <div className='delete-div'>
-                  <button className="delete-button" 
-                  onClick={handleClick}
-                  // onClick={() => handleDeleteExpense(expense.id)}
-                  >
+                  <button className="delete-button" onClick={handleClick}>
                   <MoreVertIcon 
                               aria-controls={`simple-menu-${expense.id}`} 
                               aria-haspopup="true" 
@@ -293,9 +312,6 @@ const Group = () => {
                     </p>
                   ))}
                   <div>
-                  <button className="edit-button" onClick={() => handleEditExpense(expense.id)}>
-                    Edit
-                  </button>
                   </div>
                 </div>
               )}
@@ -324,9 +340,32 @@ const Group = () => {
                 <div className="settle-payer">{userMap[settle.receiver]}</div>
                 <div className="settle-payer">{settle.amount}</div>
                 <div className='delete-div'>
-                  <button className="delete-button" onClick={() => handleDeleteSettle(settle.id)}>
-                    <DeleteOutlineIcon />
+                  <button className="delete-button" onClick={handleClick}>
+                  <MoreVertIcon 
+                    aria-controls={`simple-menu-${settle.id}`} 
+                    aria-haspopup="true" 
+                    onClick={(event) => handleMenuClick(event, settle.id)}
+                  />
                   </button>
+                  <Menu
+                    id={`simple-menu-${settle.id}`}
+                    anchorEl={menuAnchor}
+                    open={open && selectedSettleId === settle.id}
+                    onClose={handleClose}
+                  >
+                    <MenuItem onClick={() => {
+                      handleEditSettle(settle.id);
+                      handleClose();
+                    }}>
+                      Edit
+                    </MenuItem>
+                    <MenuItem onClick={() => {
+                      handleDeleteSettle(settle.id);
+                      handleClose();
+                    }}>
+                      Delete
+                    </MenuItem>
+                  </Menu>
                 </div>
                 </div>
                 </div>))}
@@ -374,7 +413,7 @@ const Group = () => {
         <AddExpenseForm onClose={closeModal} groupId={group.id} groupName={group.name} onDataSaved={handleDataSaved} expenseData={currentExpense} clearForm={clearExpenseData}/>
       </Modal>
       <Modal isOpen={isSettleModalOpen} onClose={closeSettleModal}>
-        <SettleUpForm onClose={closeSettleModal} groupId={group.id} groupName={group.name} onDataSaved={handleDataSaved} />
+        <SettleUpForm onClose={closeSettleModal} groupId={group.id} groupName={group.name} onDataSaved={handleDataSaved} settleData={currentSettle} clearForm={clearExpenseData} />
       </Modal>
     </div>
   );

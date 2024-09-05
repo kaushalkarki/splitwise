@@ -116,7 +116,7 @@ const AddExpenseForm = ({ onClose, groupId, groupName, onDataSaved, expenseData 
         ? `${API_BASE_URL}/expenses/${expenseData.id}`
         : `${API_BASE_URL}/expenses`;
   
-      const method = expenseData ? 'PUT' : 'POST';  // Use PUT if expenseData exists, otherwise POST
+      const method = expenseData ? 'PUT' : 'POST';
   
       const response = await fetch(url, {
         method,
