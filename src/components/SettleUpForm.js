@@ -6,20 +6,39 @@ import { useUserContext } from '../context/UserContext';
 import { API_BASE_URL, getHeaders } from '../constant';
 import TextField from '@mui/material/TextField';
 
-const SettleUpForm = ({ onClose, groupId, groupName, onDataSaved, settleData = null, clearForm = null }) => {
+const SettleUpForm = ({
+  onClose,
+  groupId,
+  groupName,
+  onDataSaved,
+  settleData = null,
+  clearForm = null,
+}) => {
   const { user, token } = useAuth();
   const userMap = useUserContext();
-  const [amount, setAmount] = useState(settleData ? settleData.amount : '' );
-  const [date, setDate] = useState(settleData ? new Date(settleData.settle_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
+  const [amount, setAmount] = useState(settleData ? settleData.amount : '');
+  const [date, setDate] = useState(
+    settleData
+      ? new Date(settleData.settle_date).toISOString().split('T')[0]
+      : new Date().toISOString().split('T')[0]
+  );
 
   const [isPaidByModalOpen, setIsPaidByModalOpen] = useState(false);
   const [isReceiverModalOpen, setIsReceiverModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(settleData ? settleData.sender :user ? user.id : null);
-  const [selectedUserName, setSelectedUserName] = useState(settleData ? userMap[settleData.sender] : user ? user.name : 'you');
-  const [receiverUser, setReceiverUser] = useState(settleData ? settleData.receiver : user ? user.id : null);
-  const [receiverUserName, setReceiverUserName] = useState(settleData ? userMap[settleData.receiver] : user ? user.name : 'you');
+  const [selectedUser, setSelectedUser] = useState(
+    settleData ? settleData.sender : user ? user.id : null
+  );
+  const [selectedUserName, setSelectedUserName] = useState(
+    settleData ? userMap[settleData.sender] : user ? user.name : 'you'
+  );
+  const [receiverUser, setReceiverUser] = useState(
+    settleData ? settleData.receiver : user ? user.id : null
+  );
+  const [receiverUserName, setReceiverUserName] = useState(
+    settleData ? userMap[settleData.receiver] : user ? user.name : 'you'
+  );
 
   useEffect(() => {
     fetchUsers();
@@ -28,9 +47,12 @@ const SettleUpForm = ({ onClose, groupId, groupName, onDataSaved, settleData = n
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/groups/${groupId}/get_group_users.json`, {headers: getHeaders(token)});
+      const response = await fetch(
+        `${API_BASE_URL}/groups/${groupId}/get_group_users.json`,
+        { headers: getHeaders(token) }
+      );
       const data = await response.json();
-      console.log(settleData.settle_date);
+      // console.log(settleData.settle_date);
       if (Array.isArray(data.users)) {
         setUsers(data.users);
       } else {
@@ -47,7 +69,7 @@ const SettleUpForm = ({ onClose, groupId, groupName, onDataSaved, settleData = n
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const settleDataPayload = {
       settle: {
         amount,
@@ -59,17 +81,17 @@ const SettleUpForm = ({ onClose, groupId, groupName, onDataSaved, settleData = n
     };
 
     try {
-      const url = settleData 
+      const url = settleData
         ? `${API_BASE_URL}/settles/${settleData.id}`
         : `${API_BASE_URL}/settles`;
-    
+
       const method = settleData ? 'PUT' : 'POST';
       const response = await fetch(url, {
         method,
         headers: getHeaders(token),
         body: JSON.stringify(settleDataPayload),
       });
-    
+
       if (response.ok) {
         onDataSaved();
         onClose();
@@ -82,8 +104,7 @@ const SettleUpForm = ({ onClose, groupId, groupName, onDataSaved, settleData = n
       console.error('Error settling up:', error);
       alert('Error settling up.');
     }
-};
-
+  };
 
   const handlePaidByClick = () => {
     setIsPaidByModalOpen(true);
@@ -92,7 +113,6 @@ const SettleUpForm = ({ onClose, groupId, groupName, onDataSaved, settleData = n
   const handlePaidByModalClose = () => {
     setIsPaidByModalOpen(false);
   };
-
 
   const handleReceiverClick = () => {
     setIsReceiverModalOpen(true);
@@ -120,44 +140,42 @@ const SettleUpForm = ({ onClose, groupId, groupName, onDataSaved, settleData = n
   return (
     <div>
       <h2>Group: {groupName}</h2>
-      <form className="add-expense-form" onSubmit={handleSubmit}>
+      <form className='add-expense-form' onSubmit={handleSubmit}>
         <h2>Settle Up</h2>
         <label>
           <TextField
-            id="outlined-basic"
-            type="number"
-            label="Amount"
-            variant="outlined"
+            id='outlined-basic'
+            type='number'
+            label='Amount'
+            variant='outlined'
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
         </label>
-        <div className="paid-split-container">
+        <div className='paid-split-container'>
           <p>
             <div>
-            Paid by{' '}
-            <button type="button" onClick={handlePaidByClick}>
-              {selectedUserName}
-            </button>
+              Paid by{' '}
+              <button type='button' onClick={handlePaidByClick}>
+                {selectedUserName}
+              </button>
             </div>
             Receiver{' '}
-            <button type="button" onClick={handleReceiverClick}>
+            <button type='button' onClick={handleReceiverClick}>
               {receiverUserName}
             </button>
           </p>
         </div>
-        <div className="paid-container">
-          
-        </div>
+        <div className='paid-container'></div>
         <label>
           Date
-          <input type="date" value={date} onChange={handleDateChange} />
+          <input type='date' value={date} onChange={handleDateChange} />
         </label>
-        <div className="button-container">
-          <button type="button" onClick={onClose}>
+        <div className='button-container'>
+          <button type='button' onClick={onClose}>
             Cancel
           </button>
-          <button type="submit">Settle</button>
+          <button type='submit'>Settle</button>
         </div>
       </form>
 
@@ -165,13 +183,13 @@ const SettleUpForm = ({ onClose, groupId, groupName, onDataSaved, settleData = n
       <Modal
         isOpen={isPaidByModalOpen}
         onClose={handlePaidByModalClose}
-        className="modal-1"
+        className='modal-1'
       >
         <h2>Select Payer</h2>
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <div className="user-list">
+          <div className='user-list'>
             {users.map((user) => (
               <div
                 key={user.id}
@@ -192,13 +210,13 @@ const SettleUpForm = ({ onClose, groupId, groupName, onDataSaved, settleData = n
       <Modal
         isOpen={isReceiverModalOpen}
         onClose={handleReceiverModalClose}
-        className="modal-1"
+        className='modal-1'
       >
         <h2>Select Receiver</h2>
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <div className="user-list">
+          <div className='user-list'>
             {users.map((user) => (
               <div
                 key={user.id}
